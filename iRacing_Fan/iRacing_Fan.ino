@@ -1,3 +1,5 @@
+#define ENABLE 5
+
 int PotiPin = A0;
 int switchPin = 2;
 
@@ -10,9 +12,8 @@ int n;
 
 
 void setup() {
-  Serial.begin(9600);
+  pinMode(ENABLE, OUTPUT);
   pinMode(switchPin, INPUT);
-
 }
 
 void loop() {
@@ -29,5 +30,6 @@ void loop() {
   } else {
     n = 0;
   }
+  analogWrite(ENABLE, n);  
 }
 
