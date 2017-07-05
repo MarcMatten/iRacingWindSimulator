@@ -9,8 +9,6 @@ int Poti;
 int i;
 int n;
 
-
-
 void setup() {
   pinMode(ENABLE, OUTPUT);
   pinMode(switchPin, INPUT);
@@ -21,12 +19,8 @@ void loop() {
   Poti = analogRead(PotiPin);
   Switch = digitalRead(switchPin);
   
-  Serial.println(Poti);
-  Serial.println(Switch);
-  Serial.println("======");
-  
   if (Switch==HIGH) {
-    n = max((Poti+1)/2,0);
+    n = min(max((Poti)/4,0),255);
   } else {
     n = 0;
   }
