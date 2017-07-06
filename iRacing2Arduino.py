@@ -1,18 +1,21 @@
 import irsdk
 import serial
+import struct
+from pygame import *
 
 ir = irsdk.IRSDK()
 
-ser = serial.Serial('COM4', 9600, timeout=0)
-ser.write(b'0')
+ser = serial.Serial('COM4', 9600, timeout=1)
+time.wait(2000)
+ser.write(struct.pack('>B', 0))
 
 while ir.startup():
-    gear = ir['Gear']
-    speed = ir['Speed']
+    ser.write(struct.pack('>B', 0))
 
-    if gear == 0:
-        ser.write(b'1')
-    elif speed*3.6 >= 16:
-        ser.write(b'1')
-    else:
-        ser.write(b'0')
+    if(ir['IsOnTrack']):
+        speed = ir['Speed']
+        fanSpeed = int(60 + 2.4375*speed)
+        ser.write(struct.pack('>B', fanSpeed))
+        print(fanSpeed)
+
+ser.write(struct.pack('>B', 0))
