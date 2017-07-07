@@ -1,103 +1,117 @@
-#define ENABLE 11
+//#define ENABLE 11
 
 int fanSpeed;
 
-//int PotiPin = A0;
-//int switchPin = 2;
-//
-//int Switch;
-//int Poti;
-//
-//int i;
-//int n;
-//
-//int in;
+int PotiPin = A0;
+int switchPin = 1;
+int PotiPin2 = A1;
+int switchPin2 = 2;
+
+int fan1;
+int fan2;
+
+int Switch;
+int Poti;
+int Switch2;
+int Poti2;
+//int T;
+//int fPWM;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
 //  pinMode(ENABLE, OUTPUT);
-//  pinMode(switchPin, INPUT);
-//  pinMode(13,OUTPUT);
-//  analogWrite(ENABLE, 255);
-//  delay(1000); 
-//  analogWrite(ENABLE, 0);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(switchPin, INPUT);
+  pinMode(PotiPin, INPUT);
+  pinMode(switchPin2, INPUT);
+  pinMode(PotiPin2, INPUT);
+
+//  fPWM = 300; // Hz
+//  T=1000000/fPWM; // µs 
+  
 }
 
 void loop() {
+//// My Code  ======================================
   if (Serial.available()) {      
     fanSpeed = Serial.read();
 //    fanSpeed = constrain(fanSpeed, 60, 255);
-    analogWrite(ENABLE, fanSpeed);
-//    if (fanSpeed > 127){
-//      digitalWrite(LED_BUILTIN, HIGH);
-//    }
-//    else{
-//      digitalWrite(LED_BUILTIN, LOW);
-//    }
-      
+//    analogWrite(ENABLE, fanSpeed);
+
   }
-//  else{
-//      digitalWrite(LED_BUILTIN, HIGH);
-////    digitalWrite(ENABLE, 0);
-//  }
+// =================================================
+
+
+//// PWM Kalle =====================================
+  Poti = analogRead(PotiPin);
+  Switch = digitalRead(switchPin);
+  Poti2 = analogRead(PotiPin2);
+  Switch2 = digitalRead(switchPin2);
+
+  Poti = map(Poti, 0, 1023, 100, 255);
+  Poti2 = map(Poti2, 0, 1023, 100, 255);
+
+  fan1 = map(fanSpeed, 0, 255, 0, Poti);
+  fan2 = map(fanSpeed, 0, 255, 0, Poti2);
+
+  if (Switch==HIGH) {
+    analogWrite(10, fan1);
+  }else{
+    digitalWrite(10, 0);   
+  }
+  
+  if (Switch2==HIGH) {
+    analogWrite(11, fan2);
+  }else{
+    digitalWrite(11, 0);
+  }
+
+
 
   
-//// PWM Pin 11
-//  Poti = analogRead(PotiPin);
-//  Switch = digitalRead(switchPin);
-//  
-//  if (Switch==HIGH) {
-////    n = min(max((Poti)/4,0),255);
-//    n = map(Poti,0,1023,60,255);
-//  } else {
-//    n = 0;
-//  }
-//  analogWrite(ENABLE, n);  
-
-//// PWM Kalle
-//  Poti = analogRead(PotiPin);
-//  Switch = digitalRead(switchPin);
-//  
 //  if (Switch==HIGH) {
 //    if (Poti < 20)
 //    {
 //      digitalWrite(13,0);
+//      digitalWrite(12,0);
 //    }
 //    else
 //    {
-//      int y=map(Poti,0,1023,0,4000);
-//      int z=map(Poti,0,1023,4000,0);
+//      int y=map(Poti,0,1023,0,T);
+//      int z=map(Poti,0,1023,T,0);
 //      digitalWrite(13,1);
+//      digitalWrite(12,1);
 //      delayMicroseconds(y);
 //      digitalWrite(13,0);
+//      digitalWrite(12,0);
 //      delayMicroseconds(z);
 //    }
 //  } else {
 //    digitalWrite(13,0);
+//    digitalWrite(12,0);
 //  }  
- 
 
-//// Test iRacing
-//  if (Serial.available()) {      
-//    input = Serial.read();
-//    
-//    if (input == '1') 
-//    {
-//      digitalWrite(LED_BUILTIN, HIGH);
-//      digitalWrite(ENABLE, 255);   // turn the LED on (HIGH is the voltage level)
-//    }
-//     
-//    if (input == '0') 
-//    {
-//      digitalWrite(LED_BUILTIN, LOW);
-//      digitalWrite(ENABLE, 0);   // turn the LED on (HIGH is the voltage level)
-//      
-//    }
-//  }
-//  else{
-//    digitalWrite(LED_BUILTIN, LOW);
-//    digitalWrite(ENABLE, 0);
-//  }
+//  Serial.println(Switch);
+//  Serial.println(Poti);
+//  Serial.println('===');
+//  delay(1000);
+// =================================================
 }
+
+//void PWM(int pwmPin, int Value, int ValueMin, int ValueMax, int T){
+//  if (Poti < 20)
+//    {
+//      digitalWrite(pwmPin,0);
+//    }
+//  else
+//    {
+//      int y=map(Value,ValueMin,ValueMax,0,T);
+//      int z=map(Value,ValueMin,ValueMax,T,0);
+//      digitalWrite(pwmPin,1);
+//      delayMicroseconds(y);
+//      digitalWrite(pwmPin,0);
+//      delayMicroseconds(z);
+//    }
+//}
 
