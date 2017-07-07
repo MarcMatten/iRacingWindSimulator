@@ -14,8 +14,6 @@ while ir.startup():
 
     if(ir['IsOnTrack']):
         speed = ir['Speed']
-        fanSpeed = int(60 + 2.4375*speed)
+        fanSpeed = int(3.06*speed)
         ser.write(struct.pack('>B', fanSpeed))
         print(fanSpeed)
-
-ser.write(struct.pack('>B', 0))
