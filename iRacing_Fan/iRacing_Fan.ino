@@ -6,6 +6,9 @@ int switchPin2 = 2;
 int PWM1 = 3;
 int PWM2 = 9;
 
+// Handbrake Poti
+int PotiPin3 = A6;
+
 // Variables for Fans
 int fan1;
 int fan2;
@@ -14,6 +17,7 @@ int Switch;
 int Poti;
 int Switch2;
 int Poti2;
+int Poti3;
 
 // =========================================================
 //  G27 shifter pinout
@@ -76,6 +80,9 @@ void setup() {
   
   // LED output mode configuration 
   pinMode(LED_PIN, OUTPUT);            // LED
+  
+  // Handbrake analog inputs configuration 
+  pinMode(PotiPin3, INPUT_PULLUP);    // Handbrake axis
      
   // Digital outputs initialization
   digitalWrite(LED_PIN, HIGH);
@@ -148,8 +155,12 @@ void loop() {
   }
 
   // Reading of shifter position
-  int x=analogRead(0);                 // X axis
-  int y=analogRead(1);                 // Y axis
+  int x=analogRead(X_AXIS_PIN);                 // X axis
+  int y=analogRead(Y_AXIS_PIN);                 // Y axis
+  
+  // Reading of handbrake position
+  Poti3 = analogRead(PotiPin3);          // Z axis
+  int z = map(Poti3, 0, 1023, 127, -127);
  
   // Current gear calculation
   int gear=0;                          // Default value is neutral  
@@ -208,6 +219,9 @@ for (int k = 0; k < 12; k++)
     Joystick.releaseButton(k+7);  
   }
 }
+
+// connect Handbrake 
+Joystick.setZAxis(z);
 
 // send game controller state to PC
 Joystick.sendState();  
