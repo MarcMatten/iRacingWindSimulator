@@ -9,6 +9,10 @@ int PWM2 = 9;
 // Handbrake Poti
 int PotiPin3 = A6;
 
+// Sequential Shifer Pin
+int Seq1 = 14;
+int Seq2 = 16;
+
 // Variables for Fans
 int fan1;
 int fan2;
@@ -18,6 +22,8 @@ int Poti;
 int Switch2;
 int Poti2;
 int Poti3;
+int ShiftDown;
+int ShiftUp;
 
 // =========================================================
 //  G27 shifter pinout
@@ -83,6 +89,12 @@ void setup() {
   
   // Handbrake analog inputs configuration 
   pinMode(PotiPin3, INPUT_PULLUP);    // Handbrake axis
+
+  // Sequential Shifter inputs configuration 
+  pinMode(Seq1, INPUT);
+  digitalWrite(Seq1, HIGH);
+  pinMode(Seq2, INPUT);
+  digitalWrite(Seq2, HIGH);
      
   // Digital outputs initialization
   digitalWrite(LED_PIN, HIGH);
@@ -161,6 +173,10 @@ void loop() {
   // Reading of handbrake position
   Poti3 = analogRead(PotiPin3);          // Z axis
   int z = map(Poti3, 0, 1023, 127, -127);
+  
+  // Reading sequential shifter inputs
+  ShiftDown = digitalRead(Seq1);
+  ShiftUp = digitalRead(Seq2);
  
   // Current gear calculation
   int gear=0;                          // Default value is neutral  
@@ -222,6 +238,24 @@ for (int k = 0; k < 12; k++)
 
 // connect Handbrake 
 Joystick.setZAxis(z);
+
+// Sequential Shifter
+if (ShiftDown == LOW)
+  {
+    Joystick.pressButton(21);
+  }
+  else
+  {
+    Joystick.releaseButton(21);
+  }
+if (ShiftUp == LOW)
+  {
+    Joystick.pressButton(22);
+  }
+  else
+  {
+    Joystick.releaseButton(22);
+  }
 
 // send game controller state to PC
 Joystick.sendState();  
