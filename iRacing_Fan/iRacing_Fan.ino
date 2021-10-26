@@ -58,7 +58,7 @@ int Seq2 = 16;
 // Variables for Fans
 int fan1;
 int fan2;
-int fanSpeed;
+int fanSpeed = 255;
 int Switch;
 int Poti;
 int Switch2;
@@ -161,29 +161,9 @@ void setup() {
 }
 
 void loop() {
-  // read data from Serial (iRacing/Python)
-  //int values[] = {0,0,0,0,0,0,0};
-//  if(Serial.available()){
-//    int incomingValue = Serial.read();
-//    
-//    values[currentValue] = incomingValue;
-//
-//    currentValue++;
-//    if(currentValue > 6){
-//      currentValue = 0;
-//    }
-//  } 
   if (Serial.available() > 0) {
     rlen = Serial.readBytesUntil('\n', buf, BUFFER_SIZE);
   }
-
-//  fanSpeed = values[0];
-//  BInit = values[1];
-//  RPM = values[2];
-//  SlipFL = values[3];
-//  SlipFR = values[4];
-//  SlipRL = values[5];
-//  SlipRR = values[6];
 
   if (rlen == 7) {
     RPM = min(buf[0], 8);
@@ -191,8 +171,8 @@ void loop() {
     SlipFR = min(buf[2], 4);
     SlipRL = min(buf[3], 4);
     SlipRR = min(buf[4], 4);
-    fanSpeed = min(buf[5], 127) + 128;;
-    BInit = min(buf[6], 1);;
+    BInit = min(buf[5], 1);
+    fanSpeed = 255; // min(buf[6], 127) + 128;
     rlen = 0;
   }
   else {
@@ -232,10 +212,9 @@ void loop() {
     pixels.fill(yellow, 0, SlipRL);
   }
   if (SlipRR > 0) {
-    // pixels.fill(yellow, 32-SlipRR, SlipRR);
+    pixels.fill(yellow, 32-SlipRR, SlipRR);
   }
   
-  // pixels.setBrightness(25);  
   pixels.show();   // Send the updated pixel colors to the hardware.
   
   // Fan control =========================================
