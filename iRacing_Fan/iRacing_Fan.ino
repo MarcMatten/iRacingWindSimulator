@@ -82,7 +82,12 @@ int ShiftUp;
 //  9    -                  -
 
 // include library that turns the Pro Mirco into a gamecontroller
-#include "Joystick.h"
+#include <Joystick.h>
+
+Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, 
+  JOYSTICK_TYPE_GAMEPAD, 40, 0,
+  true, false, false, false, false, false,
+  false, false, false, false, false);
 
 // Pro Micro pin definitions
 #define LED_PIN            10
@@ -95,8 +100,8 @@ int ShiftUp;
 // H-shifter mode analog axis thresholds
 #define HS_XAXIS_12        340
 #define HS_XAXIS_56        580
-#define HS_YAXIS_135       750
-#define HS_YAXIS_246       200
+#define HS_YAXIS_135       700
+#define HS_YAXIS_246       250
 
 // pin that controlls reverse gear
 #define DI_REVERSE         1
@@ -116,7 +121,7 @@ void setup() {
   pinMode(PWM2, OUTPUT);
   
 // =========================================================
-  Joystick.begin();
+  Joystick.begin(false);
   
   // G27 shifter analog inputs configuration 
   pinMode(X_AXIS_PIN, INPUT_PULLUP);   // X axis
@@ -269,10 +274,14 @@ void loop() {
   // Reading of shifter position
   int x=analogRead(X_AXIS_PIN);                 // X axis
   int y=analogRead(Y_AXIS_PIN);                 // Y axis
+
+//  Serial.print(x);
+//  Serial.print(" | ");
+//  Serial.println(y);
   
   // Reading of handbrake position
   Poti3 = analogRead(PotiPin3);          // Z axis
-  int z = map(Poti3, 0, 1023, 127, -127);
+  int z = map(Poti3, 0, 1023, 0, 1023);
   
   // Reading sequential shifter inputs
   ShiftDown = digitalRead(Seq1);
@@ -337,7 +346,7 @@ for (int k = 0; k < 12; k++)
 }
 
 // connect Handbrake 
-Joystick.setZAxis(z);
+Joystick.setXAxis(z);
 
 // Sequential Shifter
 if (ShiftDown == LOW)
